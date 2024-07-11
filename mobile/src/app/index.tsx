@@ -191,13 +191,16 @@ export default function Index() {
         resizeMode="contain"
       />
 
-      <Image source={require("@/assets/bg.png")} className="absolute" />
+      <Image
+        source={require("@/assets/bg.jpg")}
+        className="absolute object-fill opacity-20"
+      />
 
       <Text className="text-zinc-400 font-regular text-center text-lg mt-3">
-        Nathan, planeje sua próxima viagem
+        Hey Nathan, planeje sua próxima viagem
       </Text>
 
-      <View className="w-full bg-zinc-900 p-4 rounded-xl my-8 border border-zinc-800">
+      <View className="w-full bg-zinc-900/80 p-4 rounded-xl my-8 border border-zinc-800">
         <Input>
           <MapPin color={colors.zinc[400]} size={20} />
           <Input.Field
@@ -264,12 +267,9 @@ export default function Index() {
         </Button>
       </View>
 
-      <Text className="text-zinc-500 font-regular text-center text-base">
-        Ao planejar sua viagem pela plann.er você automaticamente concorda com
-        nossos{" "}
-        <Text className="text-zinc-300 underline">
-          termos de uso e políticas de privacidade.
-        </Text>
+      <Text className="text-zinc-400 font-regular text-center text-base">
+        Apenas tome cuidado com destinos aleatórios, nunca se sabe o que
+        encontrar no meio do caminho.
       </Text>
 
       <Modal

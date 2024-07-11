@@ -51,7 +51,7 @@ function Title({ children }: TextProps) {
 
   return (
     <Text
-      className={clsx("text-base font-semibold", {
+      className={clsx("text-sm font-semibold", {
         "text-purple-100": variant === "primary",
         "text-zinc-200": variant === "secondary",
       })}

@@ -1,28 +1,28 @@
-import { useState, useEffect } from "react"
-import { Alert, Keyboard, Text, View, SectionList } from "react-native"
+import { useState, useEffect } from "react";
+import { Alert, Keyboard, Text, View, SectionList } from "react-native";
 import {
   Tag,
   Clock,
   PlusIcon,
   Calendar as IconCalendar,
-} from "lucide-react-native"
-import dayjs from "dayjs"
+} from "lucide-react-native";
+import dayjs from "dayjs";
 
-import { colors } from "@/styles/colors"
+import { colors } from "@/styles/colors";
 
-import { activitiesServer } from "@/server/activities-server"
+import { activitiesServer } from "@/server/activities-server";
 
-import { TripData } from "./[id]"
-import { Button } from "@/components/button"
-import { Modal } from "@/components/modal"
-import { Input } from "@/components/input"
-import { Loading } from "@/components/loading"
-import { Calendar } from "@/components/calendar"
-import { Activity, ActivityProps } from "@/components/activity"
+import { TripData } from "./[id]";
+import { Button } from "@/components/button";
+import { Modal } from "@/components/modal";
+import { Input } from "@/components/input";
+import { Loading } from "@/components/loading";
+import { Calendar } from "@/components/calendar";
+import { Activity, ActivityProps } from "@/components/activity";
 
 type Props = {
-  tripDetails: TripData
-}
+  tripDetails: TripData;
+};
 
 enum MODAL {
   NONE = 0,
@@ -32,42 +32,42 @@ enum MODAL {
 
 type TripActivities = {
   title: {
-    dayNumber: number
-    dayName: string
-  }
-  data: ActivityProps[]
-}
+    dayNumber: number;
+    dayName: string;
+  };
+  data: ActivityProps[];
+};
 
 export function Activities({ tripDetails }: Props) {
   // MODAL
-  const [showModal, setShowModal] = useState(MODAL.NONE)
+  const [showModal, setShowModal] = useState(MODAL.NONE);
 
   // LOADING
-  const [isCreatingActivity, setIsCreatingActivity] = useState(false)
-  const [isLoadingActivities, setIsLoadingActivities] = useState(true)
+  const [isCreatingActivity, setIsCreatingActivity] = useState(false);
+  const [isLoadingActivities, setIsLoadingActivities] = useState(true);
 
   // DATA
-  const [activityTitle, setActivityTitle] = useState("")
-  const [activityDate, setActivityDate] = useState("")
-  const [activityHour, setActivityHour] = useState("")
+  const [activityTitle, setActivityTitle] = useState("");
+  const [activityDate, setActivityDate] = useState("");
+  const [activityHour, setActivityHour] = useState("");
 
   // LISTS
-  const [tripActivities, setTripActivities] = useState<TripActivities[]>([])
+  const [tripActivities, setTripActivities] = useState<TripActivities[]>([]);
 
   function resetNewActivityFields() {
-    setActivityDate("")
-    setActivityTitle("")
-    setActivityHour("")
-    setShowModal(MODAL.NONE)
+    setActivityDate("");
+    setActivityTitle("");
+    setActivityHour("");
+    setShowModal(MODAL.NONE);
   }
 
   async function handleCreateTripActivity() {
     try {
       if (!activityTitle || !activityDate || !activityHour) {
-        return Alert.alert("Cadastrar atividade", "Preencha todos os campos!")
+        return Alert.alert("Cadastrar atividade", "Preencha todos os campos!");
       }
 
-      setIsCreatingActivity(true)
+      setIsCreatingActivity(true);
 
       await activitiesServer.create({
         tripId: tripDetails.id,
@@ -75,16 +75,16 @@ export function Activities({ tripDetails }: Props) {
           .add(Number(activityHour), "h")
           .toString(),
         title: activityTitle,
-      })
+      });
 
-      Alert.alert("Nova Atividade", "Nova atividade cadastrada com sucesso!")
+      Alert.alert("Nova Atividade", "Nova atividade cadastrada com sucesso!");
 
-      await getTripActivities()
-      resetNewActivityFields()
+      await getTripActivities();
+      resetNewActivityFields();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setIsCreatingActivity(false)
+      setIsCreatingActivity(false);
     }
   }
 
@@ -92,7 +92,7 @@ export function Activities({ tripDetails }: Props) {
     try {
       const activities = await activitiesServer.getActivitiesByTripId(
         tripDetails.id
-      )
+      );
 
       const activitiesToSectionList = activities.map((dayActivity) => ({
         title: {
@@ -105,19 +105,19 @@ export function Activities({ tripDetails }: Props) {
           hour: dayjs(activity.occurs_at).format("hh[:]mm[h]"),
           isBefore: dayjs(activity.occurs_at).isBefore(dayjs()),
         })),
-      }))
+      }));
 
-      setTripActivities(activitiesToSectionList)
+      setTripActivities(activitiesToSectionList);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setIsLoadingActivities(false)
+      setIsLoadingActivities(false);
     }
   }
 
   useEffect(() => {
-    getTripActivities()
-  }, [])
+    getTripActivities();
+  }, []);
 
   return (
     <View className="flex-1">
@@ -127,7 +127,7 @@ export function Activities({ tripDetails }: Props) {
         </Text>
 
         <Button onPress={() => setShowModal(MODAL.NEW_ACTIVITY)}>
-          <PlusIcon color={colors.lime[950]} />
+          <PlusIcon color={colors.purple[100]} />
           <Button.Title>Nova atividade</Button.Title>
         </Button>
       </View>
@@ -235,5 +235,5 @@ export function Activities({ tripDetails }: Props) {
         </View>
       </Modal>
     </View>
-  )
+  );
 }

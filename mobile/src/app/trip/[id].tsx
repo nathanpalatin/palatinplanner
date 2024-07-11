@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react"
-import { Alert, Keyboard, Text, TouchableOpacity, View } from "react-native"
-import { router, useLocalSearchParams } from "expo-router"
-import { DateData } from "react-native-calendars"
+import { useEffect, useState } from "react";
+import { Alert, Keyboard, Text, TouchableOpacity, View } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { DateData } from "react-native-calendars";
 import {
   CalendarRange,
   Info,
@@ -10,26 +10,26 @@ import {
   Calendar as IconCalendar,
   User,
   Mail,
-} from "lucide-react-native"
-import dayjs from "dayjs"
+} from "lucide-react-native";
+import dayjs from "dayjs";
 
-import { colors } from "@/styles/colors"
-import { DatesSelected, calendarUtils } from "@/utils/calendarUtils"
+import { colors } from "@/styles/colors";
+import { DatesSelected, calendarUtils } from "@/utils/calendarUtils";
 
-import { TripDetails, tripServer } from "@/server/trip-server"
-import { participantsServer } from "@/server/participants-server"
+import { TripDetails, tripServer } from "@/server/trip-server";
+import { participantsServer } from "@/server/participants-server";
 
-import { Calendar } from "@/components/calendar"
-import { Loading } from "@/components/loading"
-import { Button } from "@/components/button"
-import { Input } from "@/components/input"
-import { Modal } from "@/components/modal"
-import { Activities } from "./activities"
-import { Details } from "./details"
-import { validateInput } from "@/utils/validateInput"
-import { tripStorage } from "@/storage/trip"
+import { Calendar } from "@/components/calendar";
+import { Loading } from "@/components/loading";
+import { Button } from "@/components/button";
+import { Input } from "@/components/input";
+import { Modal } from "@/components/modal";
+import { Activities } from "./activities";
+import { Details } from "./details";
+import { validateInput } from "@/utils/validateInput";
+import { tripStorage } from "@/storage/trip";
 
-export type TripData = TripDetails & { when: string }
+export type TripData = TripDetails & { when: string };
 
 enum MODAL {
   NONE = 0,
@@ -40,60 +40,60 @@ enum MODAL {
 
 export default function Trip() {
   // LOADING
-  const [isLoadingTrip, setIsLoadingTrip] = useState(true)
-  const [isUpdatingTrip, setIsUpdatingTrip] = useState(false)
-  const [isConfirmingAttendance, setIsConfirmingAttendance] = useState(false)
+  const [isLoadingTrip, setIsLoadingTrip] = useState(true);
+  const [isUpdatingTrip, setIsUpdatingTrip] = useState(false);
+  const [isConfirmingAttendance, setIsConfirmingAttendance] = useState(false);
 
   // MODAL
-  const [showModal, setShowModal] = useState(MODAL.NONE)
+  const [showModal, setShowModal] = useState(MODAL.NONE);
 
   // DATA
-  const [tripDetails, setTripDetails] = useState({} as TripData)
-  const [option, setOption] = useState<"activity" | "details">("activity")
-  const [selectedDates, setSelectedDates] = useState({} as DatesSelected)
-  const [destination, setDestination] = useState("")
-  const [guestName, setGuestName] = useState("")
-  const [guestEmail, setGuestEmail] = useState("")
+  const [tripDetails, setTripDetails] = useState({} as TripData);
+  const [option, setOption] = useState<"activity" | "details">("activity");
+  const [selectedDates, setSelectedDates] = useState({} as DatesSelected);
+  const [destination, setDestination] = useState("");
+  const [guestName, setGuestName] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
 
   const tripParams = useLocalSearchParams<{
-    id: string
-    participant?: string
-  }>()
+    id: string;
+    participant?: string;
+  }>();
 
   async function getTripDetails() {
     try {
-      setIsLoadingTrip(true)
+      setIsLoadingTrip(true);
 
       if (tripParams.participant) {
-        setShowModal(MODAL.CONFIRM_ATTENDANCE)
+        setShowModal(MODAL.CONFIRM_ATTENDANCE);
       }
 
       if (!tripParams.id) {
-        return router.back()
+        return router.back();
       }
 
-      const trip = await tripServer.getById(tripParams.id)
+      const trip = await tripServer.getById(tripParams.id);
 
-      const maxLengthDestination = 14
+      const maxLengthDestination = 14;
       const destination =
         trip.destination.length > maxLengthDestination
           ? trip.destination.slice(0, maxLengthDestination) + "..."
-          : trip.destination
+          : trip.destination;
 
-      const starts_at = dayjs(trip.starts_at).format("DD")
-      const ends_at = dayjs(trip.ends_at).format("DD")
-      const month = dayjs(trip.starts_at).format("MMM")
+      const starts_at = dayjs(trip.starts_at).format("DD");
+      const ends_at = dayjs(trip.ends_at).format("DD");
+      const month = dayjs(trip.starts_at).format("MMM");
 
-      setDestination(trip.destination)
+      setDestination(trip.destination);
 
       setTripDetails({
         ...trip,
         when: `${destination} de ${starts_at} a ${ends_at} de ${month}.`,
-      })
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setIsLoadingTrip(false)
+      setIsLoadingTrip(false);
     }
   }
 
@@ -102,84 +102,84 @@ export default function Trip() {
       startsAt: selectedDates.startsAt,
       endsAt: selectedDates.endsAt,
       selectedDay,
-    })
+    });
 
-    setSelectedDates(dates)
+    setSelectedDates(dates);
   }
 
   async function handleUpdateTrip() {
     try {
       if (!tripParams.id) {
-        return
+        return;
       }
 
       if (!destination || !selectedDates.startsAt || !selectedDates.endsAt) {
         return Alert.alert(
           "Atualizar viagem",
           "Lembre-se de, além de preencher o destino, selecione data de início e fim da viagem."
-        )
+        );
       }
 
-      setIsUpdatingTrip(true)
+      setIsUpdatingTrip(true);
 
       await tripServer.update({
         id: tripParams.id,
         destination,
         starts_at: dayjs(selectedDates.startsAt.dateString).toString(),
         ends_at: dayjs(selectedDates.endsAt.dateString).toString(),
-      })
+      });
 
       Alert.alert("Atualizar viagem", "Viagem atualizada com sucesso!", [
         {
           text: "OK",
           onPress: () => {
-            setShowModal(MODAL.NONE)
-            getTripDetails()
+            setShowModal(MODAL.NONE);
+            getTripDetails();
           },
         },
-      ])
+      ]);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setIsUpdatingTrip(false)
+      setIsUpdatingTrip(false);
     }
   }
 
   async function handleConfirmAttendance() {
     try {
       if (!tripParams.id || !tripParams.participant) {
-        return
+        return;
       }
 
       if (!guestName.trim() || !guestEmail.trim()) {
         return Alert.alert(
           "Confirmação",
           "Preencha nome e e-mail para confirmar a viagem!"
-        )
+        );
       }
 
       if (!validateInput.email(guestEmail.trim())) {
-        return Alert.alert("Confirmação", "E-mail inválido!")
+        return Alert.alert("Confirmação", "E-mail inválido!");
       }
 
-      setIsConfirmingAttendance(true)
+      setIsConfirmingAttendance(true);
 
       await participantsServer.confirmTripByParticipantId({
         participantId: tripParams.participant,
         name: guestName,
         email: guestEmail.trim(),
-      })
+      });
 
-      Alert.alert("Confirmação", "Viagem confirmada com sucesso!")
+      Alert.alert("Confirmação", "Viagem confirmada com sucesso!");
 
-      await tripStorage.save(tripParams.id)
+      await tripStorage.save(tripParams.id);
 
-      setShowModal(MODAL.NONE)
+      setShowModal(MODAL.NONE);
     } catch (error) {
-      console.log(error)
-      Alert.alert("Confirmação", "Não foi possível confirmar!")
+      console.log(error);
+      Alert.alert("Confirmação", "Não foi possível confirmar!");
     } finally {
-      setIsConfirmingAttendance(false)
+      setIsConfirmingAttendance(false);
     }
   }
 
@@ -193,22 +193,22 @@ export default function Trip() {
         {
           text: "Sim",
           onPress: async () => {
-            await tripStorage.remove()
-            router.navigate("/")
+            await tripStorage.remove();
+            router.navigate("/");
           },
         },
-      ])
+      ]);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
   useEffect(() => {
-    getTripDetails()
-  }, [])
+    getTripDetails();
+  }, []);
 
   if (isLoadingTrip) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
@@ -232,7 +232,7 @@ export default function Trip() {
         <Details tripId={tripDetails.id} />
       )}
 
-      <View className="w-full absolute -bottom-1 self-center justify-end pb-5 z-10 bg-zinc-950">
+      <View className="w-full absolute bottom-2 self-center justify-end pb-5 z-10 bg-zinc-950">
         <View className="w-full flex-row bg-zinc-900 p-4 rounded-lg border border-zinc-800 gap-2">
           <Button
             className="flex-1"
@@ -243,7 +243,7 @@ export default function Trip() {
               color={
                 option === "activity" ? colors.lime[950] : colors.zinc[200]
               }
-              size={20}
+              size={14}
             />
             <Button.Title>Atividades</Button.Title>
           </Button>
@@ -254,8 +254,10 @@ export default function Trip() {
             variant={option === "details" ? "primary" : "secondary"}
           >
             <Info
-              color={option === "details" ? colors.lime[950] : colors.zinc[200]}
-              size={20}
+              color={
+                option === "details" ? colors.purple[100] : colors.zinc[200]
+              }
+              size={14}
             />
             <Button.Title>Detalhes</Button.Title>
           </Button>
@@ -363,5 +365,5 @@ export default function Trip() {
         </View>
       </Modal>
     </View>
-  )
+  );
 }
