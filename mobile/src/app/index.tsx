@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { View, Text, Image, Keyboard, Alert } from "react-native"
+import { useEffect, useState } from "react";
+import { View, Text, Image, Keyboard, Alert } from "react-native";
 import {
   MapPin,
   Calendar as IconCalendar,
@@ -7,24 +7,24 @@ import {
   UserRoundPlus,
   ArrowRight,
   AtSign,
-} from "lucide-react-native"
-import { DateData } from "react-native-calendars"
-import dayjs from "dayjs"
+} from "lucide-react-native";
+import { DateData } from "react-native-calendars";
+import dayjs from "dayjs";
 
-import { tripStorage } from "@/storage/trip"
-import { tripServer } from "@/server/trip-server"
+import { tripStorage } from "@/storage/trip";
+import { tripServer } from "@/server/trip-server";
 
-import { colors } from "@/styles/colors"
-import { validateInput } from "@/utils/validateInput"
-import { DatesSelected, calendarUtils } from "@/utils/calendarUtils"
+import { colors } from "@/styles/colors";
+import { validateInput } from "@/utils/validateInput";
+import { DatesSelected, calendarUtils } from "@/utils/calendarUtils";
 
-import { Modal } from "@/components/modal"
-import { Input } from "@/components/input"
-import { Button } from "@/components/button"
-import { GuestEmail } from "@/components/email"
-import { Calendar } from "@/components/calendar"
-import { router } from "expo-router"
-import { Loading } from "@/components/loading"
+import { Modal } from "@/components/modal";
+import { Input } from "@/components/input";
+import { Button } from "@/components/button";
+import { GuestEmail } from "@/components/email";
+import { Calendar } from "@/components/calendar";
+import { router } from "expo-router";
+import { Loading } from "@/components/loading";
 
 enum StepForm {
   TRIP_DETAILS = 1,
@@ -39,18 +39,18 @@ enum MODAL {
 
 export default function Index() {
   // LOADING
-  const [isCreatingTrip, setIsCreatingTrip] = useState(false)
-  const [isGettingTrip, setIsGettingTrip] = useState(true)
+  const [isCreatingTrip, setIsCreatingTrip] = useState(false);
+  const [isGettingTrip, setIsGettingTrip] = useState(true);
 
   // DATA
-  const [stepForm, setStepForm] = useState(StepForm.TRIP_DETAILS)
-  const [selectedDates, setSelectedDates] = useState({} as DatesSelected)
-  const [destination, setDestination] = useState("")
-  const [emailToInvite, setEmailToInvite] = useState("")
-  const [emailsToInvite, setEmailsToInvite] = useState<string[]>([])
+  const [stepForm, setStepForm] = useState(StepForm.TRIP_DETAILS);
+  const [selectedDates, setSelectedDates] = useState({} as DatesSelected);
+  const [destination, setDestination] = useState("");
+  const [emailToInvite, setEmailToInvite] = useState("");
+  const [emailsToInvite, setEmailsToInvite] = useState<string[]>([]);
 
   // MODAL
-  const [showModal, setShowModal] = useState(MODAL.NONE)
+  const [showModal, setShowModal] = useState(MODAL.NONE);
 
   function handleNextStepForm() {
     if (
@@ -61,18 +61,18 @@ export default function Index() {
       return Alert.alert(
         "Detalhes da viagem",
         "Preencha todos as informações da viagem para seguir."
-      )
+      );
     }
 
     if (destination.length < 4) {
       return Alert.alert(
         "Detalhes da viagem",
         "O destino deve ter pelo menos 4 caracteres."
-      )
+      );
     }
 
     if (stepForm === StepForm.TRIP_DETAILS) {
-      return setStepForm(StepForm.ADD_EMAIL)
+      return setStepForm(StepForm.ADD_EMAIL);
     }
 
     Alert.alert("Nova viagem", "Confirmar viagem?", [
@@ -84,7 +84,7 @@ export default function Index() {
         text: "Sim",
         onPress: createTrip,
       },
-    ])
+    ]);
   }
 
   function handleSelectDate(selectedDay: DateData) {
@@ -92,95 +92,95 @@ export default function Index() {
       startsAt: selectedDates.startsAt,
       endsAt: selectedDates.endsAt,
       selectedDay,
-    })
+    });
 
-    setSelectedDates(dates)
+    setSelectedDates(dates);
   }
 
   function handleRemoveEmail(emailToRemove: string) {
     setEmailsToInvite((prevState) =>
       prevState.filter((email) => email !== emailToRemove)
-    )
+    );
   }
 
   function handleAddEmail() {
     if (!validateInput.email(emailToInvite)) {
-      return Alert.alert("Convidado", "E-mail inválido!")
+      return Alert.alert("Convidado", "E-mail inválido!");
     }
 
     const emailAlreadyExists = emailsToInvite.find(
       (email) => email === emailToInvite
-    )
+    );
 
     if (emailAlreadyExists) {
-      return Alert.alert("Convidado", "E-mail já foi adicionado!")
+      return Alert.alert("Convidado", "E-mail já foi adicionado!");
     }
 
-    setEmailsToInvite((prevState) => [...prevState, emailToInvite])
-    setEmailToInvite("")
+    setEmailsToInvite((prevState) => [...prevState, emailToInvite]);
+    setEmailToInvite("");
   }
 
   async function saveTrip(tripId: string) {
     try {
-      await tripStorage.save(tripId)
-      router.navigate("/trip/" + tripId)
+      await tripStorage.save(tripId);
+      router.navigate("/trip/" + tripId);
     } catch (error) {
       Alert.alert(
         "Salvar viagem",
         "Não foi possível salvar o id da viagem no dispositivo."
-      )
-      console.log(error)
+      );
+      console.log(error);
     }
   }
 
   async function createTrip() {
     try {
-      setIsCreatingTrip(true)
+      setIsCreatingTrip(true);
 
       const newTrip = await tripServer.create({
         destination,
         starts_at: dayjs(selectedDates.startsAt?.dateString).toString(),
         ends_at: dayjs(selectedDates.endsAt?.dateString).toString(),
         emails_to_invite: emailsToInvite,
-      })
+      });
 
       Alert.alert("Nova viagem", "Viagem criada com sucesso!", [
         {
           text: "OK. Continuar.",
           onPress: () => saveTrip(newTrip.tripId),
         },
-      ])
+      ]);
     } catch (error) {
-      console.log(error)
-      setIsCreatingTrip(false)
+      console.log(error);
+      setIsCreatingTrip(false);
     }
   }
 
   async function getTrip() {
     try {
-      const tripID = await tripStorage.get()
+      const tripID = await tripStorage.get();
 
       if (!tripID) {
-        return setIsGettingTrip(false)
+        return setIsGettingTrip(false);
       }
 
-      const trip = await tripServer.getById(tripID)
+      const trip = await tripServer.getById(tripID);
 
       if (trip) {
-        return router.navigate("/trip/" + trip.id)
+        return router.navigate("/trip/" + trip.id);
       }
     } catch (error) {
-      setIsGettingTrip(false)
-      console.log(error)
+      setIsGettingTrip(false);
+      console.log(error);
     }
   }
 
   useEffect(() => {
-    getTrip()
-  }, [])
+    getTrip();
+  }, []);
 
   if (isGettingTrip) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
@@ -194,7 +194,7 @@ export default function Index() {
       <Image source={require("@/assets/bg.png")} className="absolute" />
 
       <Text className="text-zinc-400 font-regular text-center text-lg mt-3">
-        Convide seus amigos e planeje sua{"\n"}próxima viagem
+        Nathan, planeje sua próxima viagem
       </Text>
 
       <View className="w-full bg-zinc-900 p-4 rounded-xl my-8 border border-zinc-800">
@@ -245,8 +245,8 @@ export default function Index() {
                     : ""
                 }
                 onPress={() => {
-                  Keyboard.dismiss()
-                  setShowModal(MODAL.GUESTS)
+                  Keyboard.dismiss();
+                  setShowModal(MODAL.GUESTS);
                 }}
                 showSoftInputOnFocus={false}
               />
@@ -260,7 +260,7 @@ export default function Index() {
               ? "Continuar"
               : "Confirmar Viagem"}
           </Button.Title>
-          <ArrowRight color={colors.lime[950]} size={20} />
+          <ArrowRight color={colors.purple[100]} size={14} />
         </Button>
       </View>
 
@@ -332,5 +332,5 @@ export default function Index() {
         </View>
       </Modal>
     </View>
-  )
+  );
 }
