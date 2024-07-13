@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, Image, Keyboard, Alert } from "react-native";
+import { View, Text, Image, Keyboard, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import {
   MapPin,
   Calendar as IconCalendar,
@@ -184,6 +184,7 @@ export default function Index() {
   }
 
   return (
+ 
     <View className="flex-1 items-center justify-center px-5">
       <Image
         source={require("@/assets/logo.png")}
@@ -193,17 +194,19 @@ export default function Index() {
 
       <Image
         source={require("@/assets/bg.jpg")}
-        className="absolute object-fill opacity-20"
+        resizeMode="cover"
+        className="absolute object-cover opacity-20"
       />
 
       <Text className="text-zinc-400 font-regular text-center text-lg mt-3">
-        Hey Nathan, planeje sua próxima viagem
+        Nathan, bora planejar sua {'\n'} próxima viagem?
       </Text>
 
       <View className="w-full bg-zinc-900/80 p-4 rounded-xl my-8 border border-zinc-800">
         <Input>
           <MapPin color={colors.zinc[400]} size={20} />
           <Input.Field
+            keyboardAppearance="dark"
             placeholder="Para onde?"
             editable={stepForm === StepForm.TRIP_DETAILS}
             onChangeText={setDestination}
@@ -214,6 +217,7 @@ export default function Index() {
         <Input>
           <IconCalendar color={colors.zinc[400]} size={20} />
           <Input.Field
+            keyboardAppearance="dark"
             placeholder="Quando?"
             editable={stepForm === StepForm.TRIP_DETAILS}
             onFocus={() => Keyboard.dismiss()}
@@ -242,6 +246,7 @@ export default function Index() {
               <Input.Field
                 placeholder="Quem estará na viagem?"
                 autoCorrect={false}
+                keyboardAppearance="dark"
                 value={
                   emailsToInvite.length > 0
                     ? `${emailsToInvite.length} pessoas(a) convidada(s)`
@@ -267,9 +272,12 @@ export default function Index() {
         </Button>
       </View>
 
-      <Text className="text-zinc-400 font-regular text-center text-base">
-        Apenas tome cuidado com destinos aleatórios, nunca se sabe o que
-        encontrar no meio do caminho.
+     <Text className="text-zinc-400 font-regular text-center text-base">
+        Ao planejar sua viagem pela plann.er você automaticamente concorda com
+        nossos{" "}
+        <Text className="text-zinc-300 underline">
+          termos de uso e políticas de privacidade.
+        </Text>
       </Text>
 
       <Modal
@@ -319,6 +327,7 @@ export default function Index() {
             <Input.Field
               placeholder="Digite o e-mail do convidado"
               keyboardType="email-address"
+              keyboardAppearance="dark"
               onChangeText={(text) => setEmailToInvite(text.toLowerCase())}
               value={emailToInvite}
               returnKeyType="send"
@@ -332,5 +341,6 @@ export default function Index() {
         </View>
       </Modal>
     </View>
+   
   );
 }

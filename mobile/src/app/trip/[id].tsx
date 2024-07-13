@@ -241,7 +241,7 @@ export default function Trip() {
           >
             <CalendarRange
               color={
-                option === "activity" ? colors.lime[950] : colors.zinc[200]
+                option === "activity" ? colors.zinc[100] : colors.zinc[400]
               }
               size={14}
             />

@@ -27,19 +27,20 @@ export function Modal({
   ...rest
 }: Props) {
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <RNModal transparent animationType="fade" {...rest}>
+   
+      <RNModal transparent animationType="slide" {...rest}>
         <BlurView
           className="flex-1"
           intensity={20}
           tint="dark"
           experimentalBlurMethod="dimezisBlurView"
         >
+           <KeyboardAvoidingView
+            className="flex-1"
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
           <View className="flex-1 justify-end bg-black/60">
-            <View className="bg-zinc-900 border-t border-zinc-700 px-6 pt-5 pb-10">
-              <ScrollView showsVerticalScrollIndicator={false}>
+            <View className="bg-zinc-900 border-t rounded-tr-2xl rounded-tl-2xl border-zinc-900 px-6 pt-5 pb-10">
                 <View className="flex-row justify-between items-center pt-5">
                   <Text className="text-white font-medium text-xl">
                     {title}
@@ -59,11 +60,12 @@ export function Modal({
                 )}
 
                 {children}
-              </ScrollView>
             </View>
+
           </View>
+    </KeyboardAvoidingView>
+
         </BlurView>
       </RNModal>
-    </KeyboardAvoidingView>
   );
 }
