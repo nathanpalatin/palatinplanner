@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ModalProps,
-  ScrollView,
   Modal as RNModal,
   TouchableOpacity,
   KeyboardAvoidingView,
@@ -28,7 +27,7 @@ export function Modal({
 }: Props) {
   return (
    
-      <RNModal transparent animationType="slide" {...rest}>
+      <RNModal transparent animationType="fade" {...rest}>
         <BlurView
           className="flex-1"
           intensity={20}

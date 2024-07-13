@@ -49,7 +49,6 @@ export function Details({ tripId }: { tripId: string }) {
         url: linkURL,
       })
 
-      Alert.alert("Link", "Link criado com sucesso!")
       resetNewLinkFields()
       await getTripLinks()
     } catch (error) {
@@ -111,7 +110,7 @@ export function Details({ tripId }: { tripId: string }) {
 
       <View className="flex-1 border-t border-zinc-800 mt-6">
         <Text className="text-zinc-50 text-2xl font-semibold my-6">
-          Convidados
+          Roteiro
         </Text>
 
         <FlatList

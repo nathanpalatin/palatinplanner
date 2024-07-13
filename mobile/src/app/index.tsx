@@ -25,6 +25,7 @@ import { GuestEmail } from "@/components/email";
 import { Calendar } from "@/components/calendar";
 import { router } from "expo-router";
 import { Loading } from "@/components/loading";
+import { Skeleton } from "../../components/Skeleton";
 
 enum StepForm {
   TRIP_DETAILS = 1,
@@ -144,14 +145,9 @@ export default function Index() {
         emails_to_invite: emailsToInvite,
       });
 
-      Alert.alert("Nova viagem", "Viagem criada com sucesso!", [
-        {
-          text: "OK. Continuar.",
-          onPress: () => saveTrip(newTrip.tripId),
-        },
-      ]);
+     saveTrip(newTrip.tripId)
+     
     } catch (error) {
-      console.log(error);
       setIsCreatingTrip(false);
     }
   }
@@ -200,8 +196,11 @@ export default function Index() {
 
       <Text className="text-zinc-400 font-regular text-center text-lg mt-3">
         Nathan, bora planejar sua {'\n'} próxima viagem?
+        
       </Text>
 
+
+   
       <View className="w-full bg-zinc-900/80 p-4 rounded-xl my-8 border border-zinc-800">
         <Input>
           <MapPin color={colors.zinc[400]} size={20} />
@@ -212,6 +211,7 @@ export default function Index() {
             onChangeText={setDestination}
             value={destination}
           />
+          
         </Input>
 
         <Input>
@@ -240,7 +240,6 @@ export default function Index() {
                 <Settings2 color={colors.zinc[200]} size={20} />
               </Button>
             </View>
-
             <Input>
               <UserRoundPlus color={colors.zinc[400]} size={20} />
               <Input.Field

@@ -129,15 +129,10 @@ export default function Trip() {
         ends_at: dayjs(selectedDates.endsAt.dateString).toString(),
       });
 
-      Alert.alert("Atualizar viagem", "Viagem atualizada com sucesso!", [
-        {
-          text: "OK",
-          onPress: () => {
+       
             setShowModal(MODAL.NONE);
             getTripDetails();
-          },
-        },
-      ]);
+      
     } catch (error) {
       console.log(error);
     } finally {
@@ -170,7 +165,6 @@ export default function Trip() {
         email: guestEmail.trim(),
       });
 
-      Alert.alert("Confirmação", "Viagem confirmada com sucesso!");
 
       await tripStorage.save(tripParams.id);
 
@@ -185,19 +179,10 @@ export default function Trip() {
 
   async function handleRemoveTrip() {
     try {
-      Alert.alert("Remover viagem", "Tem certeza que deseja remover a viagem", [
-        {
-          text: "Não",
-          style: "cancel",
-        },
-        {
-          text: "Sim",
-          onPress: async () => {
+    
             await tripStorage.remove();
             router.navigate("/");
-          },
-        },
-      ]);
+     
     } catch (error) {
       console.log(error);
     }
@@ -245,7 +230,7 @@ export default function Trip() {
               }
               size={14}
             />
-            <Button.Title>Atividades</Button.Title>
+            <Button.Title>Roteiro</Button.Title>
           </Button>
 
           <Button

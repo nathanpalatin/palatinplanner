@@ -16,9 +16,9 @@ import { TripData } from "./[id]";
 import { Button } from "@/components/button";
 import { Modal } from "@/components/modal";
 import { Input } from "@/components/input";
-import { Loading } from "@/components/loading";
 import { Calendar } from "@/components/calendar";
 import { Activity, ActivityProps } from "@/components/activity";
+import { Skeleton } from "../../../components/Skeleton";
 
 type Props = {
   tripDetails: TripData;
@@ -77,7 +77,6 @@ export function Activities({ tripDetails }: Props) {
         title: activityTitle,
       });
 
-      Alert.alert("Nova Atividade", "Nova atividade cadastrada com sucesso!");
 
       await getTripActivities();
       resetNewActivityFields();
@@ -123,7 +122,7 @@ export function Activities({ tripDetails }: Props) {
     <View className="flex-1">
       <View className="w-full flex-row mt-5 mb-6 items-center">
         <Text className="text-zinc-50 text-2xl font-semibold flex-1">
-          Atividades
+          Roteiro
         </Text>
 
         <Button onPress={() => setShowModal(MODAL.NEW_ACTIVITY)}>
@@ -133,7 +132,15 @@ export function Activities({ tripDetails }: Props) {
       </View>
 
       {isLoadingActivities ? (
-        <Loading />
+        <>
+   <Skeleton className="bg-zinc-700 w-full h-32 mb-1 rounded-sm" />
+   <Skeleton className="bg-zinc-700 w-full h-32 mb-1 rounded-sm" />
+   <Skeleton className="bg-zinc-700 w-full h-32 mb-1 rounded-sm" />
+   <Skeleton className="bg-zinc-700 w-full h-32 mb-1 rounded-sm" />
+   <Skeleton className="bg-zinc-700 w-full h-32 mb-1 rounded-sm" />
+   <Skeleton className="bg-zinc-700 w-full h-32 mb-1 rounded-sm" />
+   <Skeleton className="bg-zinc-700 w-full h-32 mb-1 rounded-sm" />
+</>
       ) : (
         <SectionList
           sections={tripActivities}
@@ -210,7 +217,7 @@ export function Activities({ tripDetails }: Props) {
           onPress={handleCreateTripActivity}
           isLoading={isCreatingActivity}
         >
-          <Button.Title>Salvar atividade</Button.Title>
+          <Button.Title>Salvar roteiro</Button.Title>
         </Button>
       </Modal>
 
