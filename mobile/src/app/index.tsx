@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, Image, Keyboard, Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, Image, Keyboard, Alert } from "react-native";
 import {
   MapPin,
   Calendar as IconCalendar,
@@ -24,7 +24,6 @@ import { Button } from "@/components/button";
 import { GuestEmail } from "@/components/email";
 import { Calendar } from "@/components/calendar";
 import { router } from "expo-router";
-import { Loading } from "@/components/loading";
 import { Skeleton } from "../../components/Skeleton";
 
 enum StepForm {
@@ -39,21 +38,18 @@ enum MODAL {
 }
 
 export default function Index() {
-  // LOADING
   const [isCreatingTrip, setIsCreatingTrip] = useState(false);
   const [isGettingTrip, setIsGettingTrip] = useState(true);
 
-  // DATA
   const [stepForm, setStepForm] = useState(StepForm.TRIP_DETAILS);
   const [selectedDates, setSelectedDates] = useState({} as DatesSelected);
   const [destination, setDestination] = useState("");
   const [emailToInvite, setEmailToInvite] = useState("");
   const [emailsToInvite, setEmailsToInvite] = useState<string[]>([]);
 
-  // MODAL
   const [showModal, setShowModal] = useState(MODAL.NONE);
 
-  function handleNextStepForm() {
+function handleNextStepForm() {
     if (
       destination.trim().length === 0 ||
       !selectedDates.startsAt ||
@@ -76,16 +72,8 @@ export default function Index() {
       return setStepForm(StepForm.ADD_EMAIL);
     }
 
-    Alert.alert("Nova viagem", "Confirmar viagem?", [
-      {
-        text: "Não",
-        style: "cancel",
-      },
-      {
-        text: "Sim",
-        onPress: createTrip,
-      },
-    ]);
+    createTrip()
+    
   }
 
   function handleSelectDate(selectedDay: DateData) {
@@ -176,7 +164,16 @@ export default function Index() {
   }, []);
 
   if (isGettingTrip) {
-    return <Loading />;
+    return  (  
+    <View className="flex-1 items-center justify-center ">
+       <Image
+        source={require("@/assets/bg.jpg")}
+        resizeMode="cover"
+        className="absolute object-cover opacity-10"
+      />
+      <Skeleton className="w-full h-full bg-zinc-900" />
+      </View>
+      )
   }
 
   return (

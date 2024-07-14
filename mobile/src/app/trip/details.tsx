@@ -13,6 +13,7 @@ import { Input } from "@/components/input"
 import { validateInput } from "@/utils/validateInput"
 import { TripLink, TripLinkProps } from "@/components/tripLink"
 import { Participant, ParticipantProps } from "@/components/participant"
+import { Skeleton } from "../../../components/Skeleton"
 
 export function Details({ tripId }: { tripId: string }) {
   const [showNewLinkModal, setShowNewLinkModal] = useState(false)
@@ -24,6 +25,8 @@ export function Details({ tripId }: { tripId: string }) {
 
   const [linkTitle, setLinkTitle] = useState("")
   const [linkURL, setLinkURL] = useState("")
+
+  const [isLoading, setIsLoading] = useState(false)
 
   function resetNewLinkFields() {
     setLinkTitle("")
@@ -69,11 +72,14 @@ export function Details({ tripId }: { tripId: string }) {
   }
 
   async function getTripParticipants() {
+    setIsLoading(true)
     try {
       const participants = await participantsServer.getByTripId(tripId)
       setParticipants(participants)
     } catch (error) {
       console.log(error)
+    }finally{
+      setIsLoading(false)
     }
   }
 
@@ -110,15 +116,19 @@ export function Details({ tripId }: { tripId: string }) {
 
       <View className="flex-1 border-t border-zinc-800 mt-6">
         <Text className="text-zinc-50 text-2xl font-semibold my-6">
-          Roteiro
+          Participantes
         </Text>
 
-        <FlatList
+        
+          <FlatList
           data={participants}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <Participant data={item} />}
           contentContainerClassName="gap-4 pb-44"
         />
+       
+
+       
       </View>
 
       <Modal
